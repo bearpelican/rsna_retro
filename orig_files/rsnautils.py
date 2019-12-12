@@ -45,9 +45,9 @@ def xresnet50_deeper    (**kwargs): return xse_model('xresnet50_deeper'   , xres
 
 # model_meta[res2net18] = model_meta[resnet152]
 for o in (
-    xresnet18, xresnet18_deep, xresnet18_deeper, xse_resnext18_32x4d, xse_resnext18_deep, xse_resnext18_deeper,
-    xresnet34, xresnet34_deep, xresnet34_deeper, xse_resnext34_32x4d, xse_resnext34_deep, xse_resnext34_deeper,
-    xresnet50_deep, xresnet50_deeper, xse_resnext50_32x4d, xse_resnext50_deep, xse_resnext50_deeper
+    xresnet18, xresnet18_deep, xresnet18_deeper, #xse_resnext18_32x4d, xse_resnext18_deep, xse_resnext18_deeper,
+    xresnet34, xresnet34_deep, xresnet34_deeper, #xse_resnext34_32x4d, xse_resnext34_deep, xse_resnext34_deeper,
+    xresnet50_deep, xresnet50_deeper, #xse_resnext50_32x4d, xse_resnext50_deep, xse_resnext50_deeper
 ): model_meta[o] = model_meta[xresnet152]
 
 def se_resnext50_32x4d(pretrained=True): return pretrainedmodels.se_resnext50_32x4d(pretrained='imagenet')
