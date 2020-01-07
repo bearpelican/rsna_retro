@@ -85,6 +85,7 @@ index = {"path": "06_seutao_features.ipynb",
          "csv_file_test": "06_seutao_features.ipynb",
          "OpenFeatMap": "06_seutao_features.ipynb",
          "get_seutao_dbunch": "06_seutao_features.ipynb",
+         "OpenMultFeatMap": "06_seutao_features.ipynb",
          "get_seutao_dbunch_meta": "06_seutao_features.ipynb",
          "FlattenPred": "06_seutao_features.ipynb",
          "submit_predictions": "06_seutao_features.ipynb"}
