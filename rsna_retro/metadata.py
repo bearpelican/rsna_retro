@@ -2,8 +2,8 @@
 
 __all__ = ['path', 'path_meta', 'dir_trn', 'dir_tst', 'fth_lbl', 'fth_trn', 'fth_tst', 'fth_trn_comb',
            'fth_trn_comb_any', 'path_trn', 'path_tst', 'fn_splits', 'fn_splits_any', 'fn_splits_sample', 'fn_grps',
-           'fn_grps_any', 'htypes', 'save_lbls', 'group_cv', 'split_data', 'get_splits', 'MetaType', 'Meta',
-           'lazy_loaders']
+           'fn_grps_any', 'htypes', 'fn_df_comb1', 'save_lbls', 'group_cv', 'split_data', 'get_splits', 'MetaType',
+           'Meta', 'lazy_loaders']
 
 #Cell
 from .imports import *
@@ -36,6 +36,16 @@ fn_grps_any = path/'grps_any.pkl'
 
 #Cell
 htypes = ['any','epidural','intraparenchymal','intraventricular','subarachnoid','subdural']
+
+#Cell
+# Stage 1 training
+# dir_trn = 'stage_1_train_images'
+# dir_tst = 'stage_1_test_images'
+# fth_lbl = path_meta/'labels.fth'
+# fth_trn = path_meta/'df_trn.fth'
+# fth_tst = path_meta/'df_tst.fth'
+
+fn_df_comb1 = '/mnt/data0/data/rsna/meta/df_comb_old.fth'
 
 #Cell
 def save_lbls():
@@ -73,13 +83,14 @@ lazy_loaders = {
     'df_labels': lambda: pd.read_feather(fth_lbl).set_index('ID'),
     'df_comb': lambda: pd.read_feather(fth_trn_comb).set_index('SOPInstanceUID'),
     'df_tst': lambda: pd.read_feather(fth_tst).set_index('SOPInstanceUID'),
+    'df_comb1': lambda: pd.read_feather(fn_df_comb1).set_index('SOPInstanceUID'),
     'fns_trn': lambda: path_trn.ls(),
     'fns_tst': lambda: path_tst.ls(),
     'splits': lambda: fn_splits.load(),
     'grps': lambda: fn_grps.load(),
     'grps_any': lambda: fn_grps_any.load(),
     'splits_any': lambda: fn_splits_any.load(),
-    'splits_sample': lambda: fn_splits_sample.load()
+    'splits_sample': lambda: fn_splits_sample.load(),
 }
 
 class MetaType(type):

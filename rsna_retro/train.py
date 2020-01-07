@@ -88,8 +88,9 @@ def do_fit(learn, epochs, lr, freeze=False, do_slice=False, **kwargs):
     learn.fit_one_cycle(epochs, lr, **kwargs)
 
 #Cell
-def get_test_data(df_tst, bs=512, sz=256, tst_dir='tst_jpg'):
+def get_test_data(df_tst, bs=512, sz=256, tst_dir='tst_jpg', sl=None):
     tst_fns = df_tst.index.values
+    if sl is not None: tst_fns = tst_fns[sl]
     tst_splits = [L.range(tst_fns), L.range(tst_fns)]
     tst_dbch = get_data_gen(tst_fns, bs=bs, img_tfm=get_pil_fn(path/tst_dir), sz=sz, splits=tst_splits, test=True)
     tst_dbch.c = 6
@@ -112,12 +113,12 @@ class DummyLoss:
 
 #Cell
 def save_features(learn, feat_path):
-    preds,targs = learn.get_preds(dl=dbunch.valid_dl)
+    preds,targs = learn.get_preds(dl=learn.dbunch.valid_dl)
     val_ids = dbunch.valid_dl.dataset.items
     feat_path.mkdir(exist_ok=True)
     for idx,pred in progress_bar(zip(val_ids, preds), total=len(val_ids)):
         np.save(str(feat_path/f'{idx}'), pred.squeeze().numpy())
 
 #Cell
-path_feat256 = path/'features_256'
-path_feat256_tst = path/'tst_features_256'
+path_feat256 = path/'features_512'
+path_feat256_tst = path/'tst_features_512'
