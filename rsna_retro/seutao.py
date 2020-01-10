@@ -41,6 +41,10 @@ def get_seutao_dbunch(df, np_file, csv_file, bs=1, num_workers=8, test=False):
 
 
 #Cell
+# saving hardcoded positioning so we can normalize the test set the same way
+pos_min, pos_max = (-998.400024, 1794.01276)
+
+#Cell
 class OpenMultFeatMap:
     def __init__(self, feature_map):
         self.fm = feature_map
@@ -55,20 +59,20 @@ class OpenMultFeatMap:
         return tuple([torch.stack(col) for col in feats])
 
 #Cell
-def get_seutao_dbunch_meta(df, np_file, csv_file, bs=1, num_workers=8, test=False):
+def get_seutao_dbunch_meta(df, np_file, csv_file, bs=1, num_workers=8, grps=Meta.grps, test=False):
     print('loading features')
     features = np.load(str(np_file))
     prob_df = pd.read_csv(csv_file).set_index('filename')
     sops = [f.replace('.dcm', '') for f in prob_df.index.values]
 
-    preds = prob_df.values
-    pos = Meta.df_comb1.loc[sops].ImagePositionPatient2.values.reshape(-1, 1)
-    pos_norm = (pos - pos.min())/pos.max()
+    preds = prob_df.values.astype(features.dtype)
+    pos = df.loc[sops].ImagePositionPatient2.values.reshape(-1, 1).astype(features.dtype)
+    pos_norm = (pos - pos_min)/pos_max
 
     feature_map = dict(zip(sops, zip(features, preds, pos_norm)))
     print('Done loading features')
 
-    dsrc = get_3d_dsrc(df, open_fn=OpenMultFeatMap(feature_map), test=test)
+    dsrc = get_3d_dsrc(df, open_fn=OpenMultFeatMap(feature_map), grps=grps, test=test)
     return get_dbunch(dsrc, bs, [Cuda()], num_workers)
 
 
@@ -81,8 +85,8 @@ class FlattenPred(Callback):
         learn.pred = learn.pred.view(-1, *learn.pred.shape[2:])
 
 #Cell
-def submit_predictions(m, load_fn, sub_fn, message):
-    dbunch_test = get_seutao_dbunch(Meta.df_tst, np_file_test, csv_file_test, bs=1, test=True)
+def submit_predictions(m, load_fn, sub_fn, message, dfunc=get_seutao_dbunch):
+    dbunch_test = dfunc(Meta.df_tst, np_file_test, csv_file_test, bs=1, test=True)
     learn = get_learner(dbunch_test, m)
     learn.load(load_fn)
     learn.add_cb(FlattenPred())
