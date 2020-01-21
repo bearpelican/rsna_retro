@@ -29,7 +29,7 @@ def get_data_gen(fns, bs, img_tfm, splits, sz=None, nw=8, mean=mean, std=std,
     if test: tfms = [tfms[0]]
     dsrc = DataSource(fns, tfms, splits=splits)
     nrm = Normalize.from_stats(mean,std)
-    batch_tfms = L(IntToFloatTensor, nrm, Cuda()) + L(batch_xtra)
+    batch_tfms = L(IntToFloatTensor, nrm) + L(batch_xtra)
     if with_aug: batch_tfms += aug_transforms(**kwargs)
     if sz is not None:
         batch_tfms = batch_tfms+[RandomResizedCropGPU(sz, min_scale=0.7, ratio=(1.,1.), valid_scale=0.9)]
