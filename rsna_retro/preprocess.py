@@ -72,8 +72,8 @@ def process_dataset(resize=False, test=False, tiff=False, crop=False, trial=Fals
 # Cell
 path_jpg = path/'nocrop_jpg'
 path_jpg256 = path/'nocrop_jpg256'
-path_tst_jpg = path/'nocrop_jpg'
-path_tst_jpg256 = path/'nocrop_jpg256'
+path_tst_jpg = path/'tst_jpg'
+path_tst_jpg256 = path/'tst_jpg256'
 
 # Cell
 mean = [0.1594, 0.0766, 0.0605]

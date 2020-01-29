@@ -48,15 +48,15 @@ std_adj = [std[0]]*3
 def get_adj_data(bs, sz, splits, img_dir=path_jpg256, windowed=False, num_adj=1, df=Meta.df_comb, test=False):
     tfm = TfmSlice(df, img_dir, windowed=windowed, num_adj=num_adj)
     num_c = (1+2*num_adj)
-    mean,std = ([mean[0]]*num_c, [std[0]]*num_c) if windowed else (mean_5c, std_5c)
+    m,s = (mean_5c, std_5c) if windowed else ([mean[0]]*num_c, [std[0]]*num_c)
     return get_data_gen(L(list(df.index)), bs=bs, img_tfm=tfm, sz=sz, splits=splits,
-                       mean=mean, std=std, test=test)
+                       mean=m, std=s, test=test)
 
 # Cell
-def get_adj_test_data(bs=512, sz=256, tst_dir='tst_jpg', windowed=False):
+def get_adj_test_data(bs=512, sz=256, tst_dir='tst_jpg', windowed=False, num_adj=1):
     tst_fns = Meta.df_tst.index.values
     tst_splits = [L.range(tst_fns), L.range(tst_fns)]
-    tst_dbch = get_adj_data(bs, sz, tst_splits, path/tst_dir, df=Meta.df_tst, windowed=windowed, test=True)
+    tst_dbch = get_adj_data(bs, sz, tst_splits, path/tst_dir, df=Meta.df_tst, windowed=windowed, num_adj=num_adj, test=True)
 #     tst_dbch = get_data_gen(tst_fns, bs=bs, img_tfm=get_pil_fn(path/tst_dir), sz=sz, splits=tst_splits, test=True)
     tst_dbch.c = 6
     return tst_dbch

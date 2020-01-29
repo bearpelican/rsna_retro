@@ -2,9 +2,9 @@
 
 __all__ = ['path', 'path_meta', 'dir_trn', 'dir_tst', 'fth_lbl', 'fth_trn', 'fth_tst', 'fth_trn_comb',
            'fth_trn_comb_any', 'path_trn', 'path_tst', 'fn_splits', 'fn_splits_any', 'fn_splits_sample', 'fn_grps',
-           'fn_grps_any', 'htypes', 'fth_df_comb1', 'fth_df_tst1', 'fn_splits_stg1', 'fn_splits_stg1_any', 'save_lbls',
-           'load_feather', 'save_feather', 'process_metadata', 'group_cv', 'split_data', 'get_splits', 'MetaType',
-           'Meta', 'lazy_loaders']
+           'fn_grps_any', 'htypes', 'fth_df_comb1', 'fth_df_tst1', 'fn_splits_stg1', 'fn_splits_stg1_any',
+           'fn_grps_stg1', 'save_lbls', 'load_feather', 'save_feather', 'process_metadata', 'group_cv', 'split_data',
+           'get_splits', 'MetaType', 'Meta', 'lazy_loaders']
 
 # Cell
 from .imports import *
@@ -51,6 +51,8 @@ fth_df_tst1 = path_meta/'df_tst1.fth'
 
 fn_splits_stg1 = path_meta/'splits_stg1.pkl'
 fn_splits_stg1_any = path_meta/'splits_stg1_any.pkl'
+
+fn_grps_stg1 = path_meta/'grps_stg1.pkl'
 
 # Cell
 def save_lbls():
@@ -103,12 +105,13 @@ lazy_loaders = {
     'df_labels': lambda: pd.read_feather(fth_lbl).set_index('ID'),
     'df_comb': lambda: pd.read_feather(fth_trn_comb).set_index('SOPInstanceUID'),
     'df_tst': lambda: pd.read_feather(fth_tst).set_index('SOPInstanceUID'),
-    'df_comb1': lambda: pd.read_feather(fn_df_comb1).set_index('SOPInstanceUID'),
+    'df_comb1': lambda: pd.read_feather(fth_df_comb1).set_index('SOPInstanceUID'),
     'fns_trn': lambda: path_trn.ls(),
     'fns_tst': lambda: path_tst.ls(),
     'splits': lambda: fn_splits.load(),
     'grps': lambda: fn_grps.load(),
     'grps_any': lambda: fn_grps_any.load(),
+    'grps_stg1': lambda: fn_grps_stg1.load(),
     'splits_any': lambda: fn_splits_any.load(),
     'splits_sample': lambda: fn_splits_sample.load(),
     'splits_stg1': lambda: fn_splits_stg1.load(),
