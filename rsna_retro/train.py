@@ -3,7 +3,7 @@
 __all__ = ['get_pil_fn', 'fn2label', 'get_data_gen', 'filename', 'get_data', 'get_cv2_fn', 'ab_tfms', 'ab_tfms_2nd',
            'autocrop', 'autocropmin', 'autocrop_tfm', 'ABTfms', 'get_album_data_gen', 'get_album_data', 'accuracy_any',
            'get_loss', 'get_learner', 'do_fit', 'moms', 'no_1cycle', 'get_test_data', 'submission', 'DummyLoss',
-           'save_features', 'path_feat256', 'path_feat256_tst']
+           'save_features', 'path_feat_384avg', 'path_feat_tst_384avg']
 
 # Cell
 from .imports import *
@@ -166,7 +166,7 @@ def get_loss(scale=None):
 
 
 # Cell
-def get_learner(dls, arch_or_model, lf=None, pretrained=False, opt_func=None, metrics=None, fp16=True, config=None):
+def get_learner(dls, arch_or_model, lf=None, pretrained=False, opt_func=None, metrics=None, fp16=True, config=None, name=None):
     if lf is None: lf = get_loss()
     if metrics is None: metrics=[accuracy_multi,accuracy_any]
     if opt_func is None: opt_func = partial(Adam, wd=1e-5, eps=1e-4, sqr_mom=0.999)
@@ -177,6 +177,7 @@ def get_learner(dls, arch_or_model, lf=None, pretrained=False, opt_func=None, me
         if config is None: config=dict(ps=0., lin_ftrs=[], concat_pool=False)
         learn = cnn_learner(dls, arch_or_model, pretrained=pretrained, loss_func=lf, lr=3e-3,
                             opt_func=opt_func, metrics=metrics, config=config)
+    if name: learn.add_cb(SaveModelCallback(fname=name))
     return learn.to_fp16() if fp16 else learn
 
 # Cell
@@ -221,8 +222,8 @@ def save_features(learn, feat_path):
     val_ids = learn.dls.valid.dataset.items
     feat_path.mkdir(exist_ok=True)
     for idx,pred in progress_bar(zip(val_ids, preds), total=len(val_ids)):
-        np.save(str(feat_path/f'{idx}'), pred.squeeze().numpy())
+        np.save(str(feat_path/f'{idx}'), pred.squeeze().numpy().astype(np.float16))
 
 # Cell
-path_feat256 = path/'features_512'
-path_feat256_tst = path/'tst_features_512'
+path_feat_384avg = path/'features_384_avg'
+path_feat_tst_384avg = path/'tst_features_384_avg'

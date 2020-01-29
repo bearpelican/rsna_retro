@@ -63,7 +63,7 @@ class OpenMultFeatMap:
         return tuple([torch.stack(col) for col in feats])
 
 # Cell
-def get_seutao_dls_meta(df, np_file, csv_file, bs=1, num_workers=8, grps=Meta.grps, test=False):
+def get_seutao_dls_meta(df, np_file, csv_file, bs=1, num_workers=8, grps=Meta.grps_stg1, test=False):
     print('loading features')
     features = np.load(str(np_file))
     prob_df = pd.read_csv(csv_file).set_index('filename')
