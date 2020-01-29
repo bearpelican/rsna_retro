@@ -40,8 +40,8 @@ def get_seutao_dls(df, np_file, csv_file, bs=1, num_workers=8, test=False):
     feature_map = dict(zip(sops, features))
     print('Done loading features')
 
-    dsrc = get_3d_dsrc(df, open_fn=OpenFeatMap(feature_map), test=test)
-    return get_dls(dsrc, bs, None, num_workers, pad=(bs!=1))
+    dsets = get_3d_dsets(df, open_fn=OpenFeatMap(feature_map), test=test)
+    return get_dls(dsets, bs, None, num_workers, pad=(bs!=1))
 
 
 # Cell
@@ -76,8 +76,8 @@ def get_seutao_dls_meta(df, np_file, csv_file, bs=1, num_workers=8, grps=Meta.gr
     feature_map = dict(zip(sops, zip(features, preds, pos_norm)))
     print('Done loading features')
 
-    dsrc = get_3d_dsrc(df, open_fn=OpenMultFeatMap(feature_map), grps=grps, test=test)
-    return get_dls(dsrc, bs, None, num_workers, pad=(bs!=1))
+    dsets = get_3d_dsets(df, open_fn=OpenMultFeatMap(feature_map), grps=grps, test=test)
+    return get_dls(dsets, bs, None, num_workers, pad=(bs!=1))
 
 
 # Cell
@@ -95,7 +95,7 @@ def submit_predictions(m, load_fn, sub_fn, message, dfunc=get_seutao_dls):
     learn.load(load_fn)
 #     learn.add_cb(DePadLoss())
     learn.add_cb(FlattenPred())
-    preds,targs = learn.get_preds(dl=dls_test.valid_dl)
+    preds,targs = learn.get_preds(dl=dls_test.valid)
 
     df_series = Meta.df_tst.sort_values(['SeriesInstanceUID', "ImagePositionPatient2"])
 

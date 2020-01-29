@@ -58,8 +58,8 @@ def main(
     #fns4 = [o for o in fns3 if o not in fns2]
     #fns5 = [path_trn/Path(o).with_suffix('.dcm') for o in fns4]
 
-    dsrc = DataSource(fns, [[dcm_tfm],[os.path.basename]])
-    dl = TfmdDL(dsrc, bs=bs, num_workers=1)
+    dsets = Datasets(fns, [[dcm_tfm],[os.path.basename]])
+    dl = TfmdDL(dsets, bs=bs, num_workers=1)
 
     for i,b in enumerate(progress_bar(dl)):
         process_batch(*b, dest=dest, tiff=tiff, crop=crop, resize=resize, n_workers=n_workers)

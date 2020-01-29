@@ -17,7 +17,7 @@ sc_preds = optx*preds
 dest_fn = (path_pred_test/f'{fn}.pkl')
 dest_fn.save(sc_preds.cpu())
 
-dl = learn.dbunch.valid_dl
+dl = learn.dls.valid
 with dl.set_split_idx(0): preds,targs = learn.get_preds(act=noop, dl=dl)
 sc_preds = optx*preds
 dest_fn = (path_pred_test/f'{fn}-flip.pkl')

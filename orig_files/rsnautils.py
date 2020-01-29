@@ -127,16 +127,16 @@ def get_wgts(df, splits):
 def get_data_gen(fns, bs, img_tfm, mean, std, splits, sz=None, nw=8,
         wgts=None, batch_xtra=None, after_item=None, with_aug=True, **kwargs):
     tfms = [[img_tfm], [fn2label,EncodedMultiCategorize(htypes)]]
-    dsrc = DataSource(fns, tfms, splits=splits)
+    dsets = Datasets(fns, tfms, splits=splits)
     nrm = Normalize(tensor(mean),tensor(std))
     batch_tfms = L(nrm, Cuda()) + L(batch_xtra)
     if with_aug: batch_tfms += aug_transforms(**kwargs)
     if sz is not None:
         batch_tfms = batch_tfms+[RandomResizedCropGPU(sz, min_scale=0.7, ratio=(1.,1.), valid_scale=0.9)]
     if wgts is None:
-        return dsrc.databunch(bs=bs, num_workers=nw, after_item=after_item, after_batch=batch_tfms)
+        return dsets.dataloaders(bs=bs, num_workers=nw, after_item=after_item, after_batch=batch_tfms)
     else:
-        return dsrc.weighted_databunch(wgts, bs=bs, num_workers=nw, after_item=after_item, after_batch=batch_tfms)
+        return dsets.weighted_dataloaders(wgts, bs=bs, num_workers=nw, after_item=after_item, after_batch=batch_tfms)
 
 def get_data_pil(fns, bs, splits, sz=None, use_hist=True, nw=8, path=None,
                  wgts=None, mean=None, std=None, with_aug=True, batch_xtra=None):
@@ -297,31 +297,31 @@ def appianish_cycle_train(learn, get_data, no_pretrain=False, schedule=None, lr=
     """
     learn.loss_func = get_loss()
     bs,sz = schedule[3]
-    learn.dbunch = get_data(bs, None, use_wgt=False)
+    learn.dls = get_data(bs, None, use_wgt=False)
     do_fit(learn, 1, lr*2/3*2/3, freeze=False, **no_1cycle)
     """
 
     if no_pretrain:
         learn.loss_func = get_loss()
-        learn.dbunch = get_data(64, 160, use_wgt=False)
+        learn.dls = get_data(64, 160, use_wgt=False)
         do_fit(learn, 4, lr, freeze=False, **no_1cycle)
 
     #if not schedule: schedule = [(64,192), (64,352), (64,512), (64,None)]
     #if not schedule: schedule = [(16,192),(16,352),(16,512),(16,None)]
     learn.loss_func = get_loss()
     bs,sz = schedule[0]
-    learn.dbunch = get_data(bs, 192, use_wgt=True)
+    learn.dls = get_data(bs, 192, use_wgt=True)
     do_fit(learn, 2, lr, do_slice=do_slice, freeze=freeze , **no_1cycle)
     bs,sz = schedule[1]
-    learn.dbunch = get_data(bs, 352, use_wgt=True)
+    learn.dls = get_data(bs, 352, use_wgt=True)
     do_fit(learn, 2, lr*2/3, do_slice=do_slice, freeze=freeze, **no_1cycle)
     bs,sz = schedule[2]
-    learn.dbunch = get_data(bs, 512, use_wgt=True)
+    learn.dls = get_data(bs, 512, use_wgt=True)
     do_fit(learn, 1, lr*2/3*2/3, do_slice=False, freeze=False, **no_1cycle)
 
     learn.loss_func = get_loss()
     bs,sz = schedule[3]
-    learn.dbunch = get_data(bs, None, use_wgt=False)
+    learn.dls = get_data(bs, None, use_wgt=False)
     do_fit(learn, 1, lr*2/3*2/3, freeze=False, **no_1cycle)
     do_fit(learn, 1, lr*2/3*2/3, freeze=False, div=1, pct_start=0.01)
 
@@ -335,7 +335,7 @@ def train_save( pre, gpu, n_gpus, nw, magic_seed, get_data_func, get_learner_fun
 
 def predict( learn, pre, get_data, is_master=False):
     if is_master: print(pre)
-    learn.dbunch = get_data(128, None, use_wgt=None)
+    learn.dls = get_data(128, None, use_wgt=None)
     pred_penul(learn, pre, get_data, is_master)
 
 def save_preds(learn, ds_idx, pre):
@@ -361,6 +361,6 @@ def old_predict(pre, gpu, n_gpus, nw, magic_seed, get_data_func, get_learner_fun
         arch=None, train=False, pred=False, is_master=False, **kwargs):
     get_data = get_data_func(n_gpus, nw=nw)
     learn = get_learner_func(gpu, n_gpus, get_data, arch=arch)
-    learn.dbunch = get_data(128, None, use_wgt=None)
+    learn.dls = get_data(128, None, use_wgt=None)
     pred_penul(learn, pre, get_data, is_master)
 

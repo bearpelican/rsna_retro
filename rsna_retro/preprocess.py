@@ -62,8 +62,8 @@ def process_dataset(resize=False, test=False, tiff=False, crop=False, trial=Fals
 
     fns = [x for x in fns if not (dest/x.name).exists()]
 
-    dsrc = DataSource(fns, [[dcm_tfm],[os.path.basename]])
-    dl = TfmdDL(dsrc, bs=bs, num_workers=1)
+    dsets = Datasets(fns, [[dcm_tfm],[os.path.basename]])
+    dl = TfmdDL(dsets, bs=bs, num_workers=1)
 
     for i,b in enumerate(progress_bar(dl)):
         process_batch(*b, dest=dest, tiff=tiff, crop=crop, resize=resize, n_workers=n_workers)

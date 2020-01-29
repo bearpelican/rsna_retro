@@ -26,19 +26,19 @@ class ReadCT:
     def y(self, sid): return TensorMultiCategory(df.loc[sid,htypes].values).float()
 
 rct = ReadCT(512)
-dsrc = DataSource(sids, [[rct.x]], splits=s_splits)
+dsets = Datasets(sids, [[rct.x]], splits=s_splits)
 mean,std = 0.2,0.3
 nrm = Normalize(tensor(mean),tensor(std))
 tfm = Flip(p=1)
 batch_tfms = [nrm, Cuda(), IntToFloatTensor()]
 #batch_tfms.append(tfm)
 
-dbunch = DataBunch(
-    TfmdDL(dsrc.train, bs=None, after_batch=batch_tfms, num_workers=8, shuffle=True),
-    TfmdDL(dsrc.valid, bs=None, after_batch=batch_tfms, num_workers=8)
+dls = DataLoaders(
+    TfmdDL(dsets.train, bs=None, after_batch=batch_tfms, num_workers=8, shuffle=True),
+    TfmdDL(dsets.valid, bs=None, after_batch=batch_tfms, num_workers=8)
 )
-dbunch.device = default_device()
-dbunch.c = 6
+dls.device = default_device()
+dls.c = 6
 
 loss_func = get_loss()
 
@@ -94,7 +94,7 @@ def get_m(depth, arch, init_stem, pre):
         m.load_state_dict(sd)
 
     config=dict(custom_head=m, init=None)
-    learn = cnn_learner(dbunch, globals()[arch], pretrained=False, loss_func=loss_func, lr=3e-3,
+    learn = cnn_learner(dls, globals()[arch], pretrained=False, loss_func=loss_func, lr=3e-3,
                         metrics=metrics, config=config).to_fp16()
     return learn
 
