@@ -146,8 +146,8 @@ class OpenFeats:
         return TensorCTScan(torch.stack(xs))
 
 # Cell
-def get_3d_dls_feat(df, path=path/'features_256', bs=1, num_workers=8):
-    dsets = get_3d_dsets(df, open_fn=OpenFeats(path))
+def get_3d_dls_feat(df, path=path/'features_256', bs=1, num_workers=8, test=False):
+    dsets = get_3d_dsets(df, open_fn=OpenFeats(path), test=test)
     return get_dls(dsets, bs, [], num_workers)
 
 
