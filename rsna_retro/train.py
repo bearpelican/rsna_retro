@@ -3,7 +3,8 @@
 __all__ = ['get_pil_fn', 'fn2label', 'get_data_gen', 'filename', 'get_data', 'get_cv2_fn', 'ab_tfms', 'ab_tfms_2nd',
            'autocrop', 'autocropmin', 'autocrop_tfm', 'ABTfms', 'get_album_data_gen', 'get_album_data', 'accuracy_any',
            'get_loss', 'get_learner', 'do_fit', 'moms', 'no_1cycle', 'get_test_data', 'submission', 'DummyLoss',
-           'save_features', 'path_feat_384avg', 'path_feat_tst_384avg']
+           'save_features', 'path_feat_384avg', 'path_feat_tst_384avg', 'path_feat_384avg_adj',
+           'path_feat_tst_384avg_adj']
 
 # Cell
 from .imports import *
@@ -227,3 +228,6 @@ def save_features(learn, feat_path):
 # Cell
 path_feat_384avg = path/'features_384_avg'
 path_feat_tst_384avg = path/'tst_features_384_avg'
+
+path_feat_384avg_adj = path/'features_384_avg_adj'
+path_feat_tst_384avg_adj = path/'tst_features_384_avg_adj'

@@ -53,10 +53,10 @@ def get_adj_data(bs, sz, splits, img_dir=path_jpg256, windowed=False, num_adj=1,
                        mean=m, std=s, test=test)
 
 # Cell
-def get_adj_test_data(bs=512, sz=256, tst_dir='tst_jpg', windowed=False, num_adj=1):
-    tst_fns = Meta.df_tst.index.values
+def get_adj_test_data(bs=512, sz=256, tst_dir='tst_jpg', windowed=False, num_adj=1, df=Meta.df_tst):
+    tst_fns = df.index.values
     tst_splits = [L.range(tst_fns), L.range(tst_fns)]
-    tst_dbch = get_adj_data(bs, sz, tst_splits, path/tst_dir, df=Meta.df_tst, windowed=windowed, num_adj=num_adj, test=True)
+    tst_dbch = get_adj_data(bs, sz, tst_splits, path/tst_dir, df=df, windowed=windowed, num_adj=num_adj, test=True)
 #     tst_dbch = get_data_gen(tst_fns, bs=bs, img_tfm=get_pil_fn(path/tst_dir), sz=sz, splits=tst_splits, test=True)
     tst_dbch.c = 6
     return tst_dbch

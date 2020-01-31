@@ -41,7 +41,7 @@ def get_seutao_dls(df, np_file, csv_file, bs=1, num_workers=8, test=False):
     print('Done loading features')
 
     dsets = get_3d_dsets(df, open_fn=OpenFeatMap(feature_map), test=test)
-    return get_dls(dsets, bs, None, num_workers, pad=(bs!=1))
+    return get_dls(dsets, bs, None, num_workers)
 
 
 # Cell
@@ -77,7 +77,7 @@ def get_seutao_dls_meta(df, np_file, csv_file, bs=1, num_workers=8, grps=Meta.gr
     print('Done loading features')
 
     dsets = get_3d_dsets(df, open_fn=OpenMultFeatMap(feature_map), grps=grps, test=test)
-    return get_dls(dsets, bs, None, num_workers, pad=(bs!=1))
+    return get_dls(dsets, bs, None, num_workers)
 
 
 # Cell
