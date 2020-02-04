@@ -89,15 +89,10 @@ class FlattenPred(Callback):
         learn.pred = learn.pred.view(-1, *learn.pred.shape[2:])
 
 # Cell
-def submit_predictions(m, load_fn, sub_fn, message, dfunc=get_seutao_dls):
-    dls_test = dfunc(Meta.df_tst, np_file_test, csv_file_test, bs=1, test=True)
-    learn = get_learner(dls_test, m)
+def submit_predictions(learn, load_fn, sub_fn, message, dfunc=get_seutao_dls):
+    df = Meta.df_tst
+    learn.dls = dfunc(df, np_file_test, csv_file_test, bs=1, test=True)
     learn.load(load_fn)
-#     learn.add_cb(DePadLoss())
-    learn.add_cb(FlattenPred())
-    preds,targs = learn.get_preds(dl=dls_test.valid)
-
-    df_series = Meta.df_tst.sort_values(['SeriesInstanceUID', "ImagePositionPatient2"])
-
-    pred_csv = submission(df_series, preds, fn=sub_fn)
+    preds,targs = learn.get_preds()
+    pred_csv = submission(df, preds, fn=sub_fn)
     api.competition_submit(f'{sub_fn}.csv', message, 'rsna-intracranial-hemorrhage-detection')

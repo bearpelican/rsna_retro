@@ -29,7 +29,8 @@ def get_data_gen(fns, bs, img_tfm, splits, sz=None, nw=8, mean=mean, std=std,
     batch_tfms = L(IntToFloatTensor, nrm) + L(batch_xtra)
     if with_aug: batch_tfms += aug_transforms(**kwargs)
     if sz is not None:
-        batch_tfms = batch_tfms+[RandomResizedCropGPU(sz, min_scale=0.7, ratio=(1.,1.), valid_scale=0.9)]
+        batch_tfms = batch_tfms+[RandomResizedCropGPU(sz, min_scale=0.7, ratio=(1.,1.))]
+#         batch_tfms = batch_tfms+[RandomResizedCropGPU(sz, min_scale=0.7, ratio=(1.,1.), valid_scale=0.9)]
     return dsets.dataloaders(bs=bs, num_workers=nw, after_item=after_item, after_batch=batch_tfms)
 
 # Cell
