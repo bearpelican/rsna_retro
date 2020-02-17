@@ -45,10 +45,6 @@ def get_seutao_dls(df, np_file, csv_file, bs=1, num_workers=8, test=False):
 
 
 # Cell
-# saving hardcoded positioning so we can normalize the test set the same way
-pos_min, pos_max, pos_mean, pos_std = (-998.400024, 1794.01276, 167.08153131830622, 244.90964319136026)
-
-# Cell
 class OpenMultFeatMap:
     def __init__(self, feature_map):
         self.fm = feature_map
