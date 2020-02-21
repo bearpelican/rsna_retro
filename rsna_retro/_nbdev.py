@@ -120,7 +120,21 @@ index = {"path": "06_seutao_features.ipynb",
          "OpenMultFeatMap": "06_seutao_features.ipynb",
          "get_seutao_dls_meta": "06_seutao_features.ipynb",
          "FlattenPred": "06_seutao_features.ipynb",
-         "submit_predictions": "06_seutao_features.ipynb"}
+         "submit_predictions": "06_seutao_features.ipynb",
+         "TripletLoss": "08_train_self_supervised.ipynb",
+         "TripletCallback": "08_train_self_supervised.ipynb",
+         "ContrastiveLoss": "08_train_self_supervised.ipynb",
+         "ContrastiveCallback": "08_train_self_supervised.ipynb",
+         "BatchContrastiveLoss": "08_train_self_supervised.ipynb",
+         "get_ss_gen": "08_train_self_supervised.ipynb",
+         "get_ss_data": "08_train_self_supervised.ipynb",
+         "get_aug_pipe": "08_train_self_supervised.ipynb",
+         "CombinedContrastiveCallback": "08_train_self_supervised.ipynb",
+         "CombinedContrastiveLoss": "08_train_self_supervised.ipynb",
+         "loss_cont": "08_train_self_supervised.ipynb",
+         "loss_class": "08_train_self_supervised.ipynb",
+         "accuracy_ss": "08_train_self_supervised.ipynb",
+         "CombinedModel": "08_train_self_supervised.ipynb"}
 
 modules = ["metadata.py",
            "preprocess.py",
@@ -129,7 +143,8 @@ modules = ["metadata.py",
            "trainfull3d.py",
            "trainfull3d_labels.py",
            "train_adjacent.py",
-           "seutao.py"]
+           "seutao.py",
+           "self_supervised.py"]
 
 doc_url = "https://bearpelican.github.io/rsna_retro/"
 
