@@ -168,17 +168,17 @@ def get_loss(scale=None):
 
 
 # Cell
-def get_learner(dls, arch_or_model, lf=None, pretrained=False, opt_func=None, metrics=None, fp16=True, config=None, name=None):
+def get_learner(dls, arch_or_model, lf=None, pretrained=False, opt_func=None, metrics=None, fp16=True, config=None, name=None, **kwargs):
     if lf is None: lf = get_loss()
     if metrics is None: metrics=[accuracy_multi,accuracy_any]
     if opt_func is None: opt_func = partial(Adam, wd=1e-5, eps=1e-4, sqr_mom=0.999)
     if isinstance(arch_or_model, nn.Module):
         learn = Learner(dls, arch_or_model, loss_func=lf, lr=3e-3,
-                    opt_func=opt_func, metrics=metrics)
+                    opt_func=opt_func, metrics=metrics, **kwargs)
     else:
         if config is None: config=dict(ps=0., lin_ftrs=[], concat_pool=False)
         learn = cnn_learner(dls, arch_or_model, pretrained=pretrained, loss_func=lf, lr=3e-3,
-                            opt_func=opt_func, metrics=metrics, config=config)
+                            opt_func=opt_func, metrics=metrics, config=config, **kwargs)
     if name: learn.add_cb(SaveModelCallback(fname=name))
     return learn.to_fp16() if fp16 else learn
 
