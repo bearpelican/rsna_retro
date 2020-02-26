@@ -30,8 +30,8 @@ def pipe_update_size(pipe, size):
             tf.size = size
 
 # Cell
-def get_aug_pipe(size, min_scale=0.4, **kwargs):
-    tfms = [Normalize.from_stats(mean,std)] + aug_transforms(size=size, min_scale=min_scale, **kwargs)
+def get_aug_pipe(size, min_scale=0.4, stats=(mean,std), **kwargs):
+    tfms = [Normalize.from_stats(*stats)] + aug_transforms(size=size, min_scale=min_scale, **kwargs)
     return Pipeline(tfms)
 
 # Cell
@@ -94,6 +94,8 @@ class SSCallback(Callback):
 
     def begin_fit(self):
         self.learn.model = SSModel(self.learn.model)
+
+
         lf = CombinedSSLoss(self.ss_loss_func, self.learn.loss_func, self.multi_loss)
         self.learn.loss_func = lf
         self.orig_metrics = self.learn.metrics
@@ -112,8 +114,8 @@ class SSCallback(Callback):
     def set_split(self, split_idx):
         self.aug_targ.split_idx = split_idx
 #         self.aug_pos.split_idx = split_idx # always keep augmentation
-#     def begin_validate(self): self.set_split(1)
-#     def begin_train(self): self.set_split(0)
+    def begin_validate(self): self.set_split(1)
+    def begin_train(self): self.set_split(0)
 
     def begin_batch(self):
         xb, = self.learn.xb
